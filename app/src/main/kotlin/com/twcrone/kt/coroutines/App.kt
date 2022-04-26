@@ -14,13 +14,20 @@ class App {
 
 fun main() = runBlocking {
     //launch { doEet() }
-//    val job = launch {
-//        delay(1000L)
-//        println("Job Finished")
-//    }
-//    println("Waiting on job...")
-//    job.join()
-//    println("Done")
+    val job = launch {
+        repeat(1000) {
+            println("job: I'm sleeping $it ...")
+            delay(500L)
+        }
+    }
+    delay(1300L)
+    println("Canceling...")
+    job.cancel()
+    job.join()
+    println("Done")
+}
+
+suspend fun repeatLaunch() = coroutineScope {
     repeat(100_000) {
         launch {
             delay(500L)
