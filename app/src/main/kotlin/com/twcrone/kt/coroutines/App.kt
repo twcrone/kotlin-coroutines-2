@@ -1,9 +1,6 @@
 package com.twcrone.kt.coroutines
 
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 class App {
     val greeting: String
@@ -14,16 +11,39 @@ class App {
 
 fun main() = runBlocking {
     //launch { doEet() }
-    val job = launch {
-        repeat(1000) {
-            println("job: I'm sleeping $it ...")
-            delay(500L)
+//    val job = launch {
+//        repeat(1000) {
+//            println("job: I'm sleeping $it ...")
+//            delay(500L)
+//        }
+//    }
+//    delay(1300L)
+//    println("Canceling...")
+//    job.cancel()
+//    job.join()
+//    println("Done")
+    val start = System.currentTimeMillis()
+    val job = launch(Dispatchers.Default) {
+        var nextPrintTime = start
+        var i = 0
+        try {
+            repeat(1000) { i ->
+                println("job: sleeping $i ...")
+                delay(500L)
+            }
+        } finally {
+            println("job: finally")
         }
+//        while (isActive) {
+//            if(System.currentTimeMillis() >= nextPrintTime) {
+//                println("job: I'm sleeping ${i++} ...")
+//                nextPrintTime += 500L
+//            }
+//        }
     }
     delay(1300L)
-    println("Canceling...")
-    job.cancel()
-    job.join()
+    println("Trying to cancel...")
+    job.cancelAndJoin()
     println("Done")
 }
 
