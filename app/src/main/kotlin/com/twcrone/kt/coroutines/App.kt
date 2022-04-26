@@ -13,7 +13,13 @@ class App {
 }
 
 fun main() = runBlocking {
-    launch { doEet() }
+    //launch { doEet() }
+    val job = launch {
+        delay(1000L)
+        println("Job Finished")
+    }
+    println("Waiting on job...")
+    job.join()
     println("Done")
 }
 
