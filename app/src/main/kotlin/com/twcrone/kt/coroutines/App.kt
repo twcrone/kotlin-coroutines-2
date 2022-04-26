@@ -13,11 +13,15 @@ fun main() {
     runBlocking {
         repeat(100_000) {
             launch {
-                val resource = withTimeout(60) {
-                    delay(50)
-                    Resource()
+                var resource: Resource? = null
+                try {
+                    withTimeout(60) {
+                        delay(50)
+                        resource = Resource()
+                    }
+                } finally {
+                    resource?.close()
                 }
-                resource.close()
             }
         }
     }
