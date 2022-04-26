@@ -14,13 +14,19 @@ class App {
 
 fun main() = runBlocking {
     //launch { doEet() }
-    val job = launch {
-        delay(1000L)
-        println("Job Finished")
+//    val job = launch {
+//        delay(1000L)
+//        println("Job Finished")
+//    }
+//    println("Waiting on job...")
+//    job.join()
+//    println("Done")
+    repeat(100_000) {
+        launch {
+            delay(500L)
+            print(".")
+        }
     }
-    println("Waiting on job...")
-    job.join()
-    println("Done")
 }
 
 suspend fun doEet() = coroutineScope {
