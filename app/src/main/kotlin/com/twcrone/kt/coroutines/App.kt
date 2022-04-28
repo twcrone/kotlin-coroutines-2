@@ -1,6 +1,7 @@
 package com.twcrone.kt.coroutines
 
 import kotlinx.coroutines.*
+import kotlin.system.measureTimeMillis
 
 var acquired = 0
 
@@ -11,21 +12,29 @@ class Resource {
 
 fun main() {
     runBlocking {
-        repeat(100_000) {
-            launch {
-                var resource: Resource? = null
-                try {
-                    withTimeout(60) {
-                        delay(50)
-                        resource = Resource()
-                    }
-                } finally {
-                    resource?.close()
-                }
-            }
+        val time = measureTimeMillis {
+            val one = async(start = CoroutineStart.LAZY) { doSomethingUsefulOne() }
+            val two = async(start = CoroutineStart.LAZY) { doSomethingUsefulTwo() }
+            one.start()
+            two.start()
+            println("The answer is ${one.await() + two.await()}")
         }
+        println("Completed in $time ms")
+//        repeat(100_000) {
+//            launch {
+//                var resource: Resource? = null
+//                try {
+//                    withTimeout(60) {
+//                        delay(50)
+//                        resource = Resource()
+//                    }
+//                } finally {
+//                    resource?.close()
+//                }
+//            }
+//        }
     }
-    println(acquired)
+    //println(acquired)
 }
 
 suspend fun repeatLaunch() = coroutineScope {
@@ -47,4 +56,14 @@ suspend fun doEet() = coroutineScope {
         println("Eeet!!!")
     }
     println("Do")
+}
+
+suspend fun doSomethingUsefulOne(): Int {
+    delay(1000L)
+    return 13
+}
+
+suspend fun doSomethingUsefulTwo(): Int {
+    delay(1000L)
+    return 29
 }
