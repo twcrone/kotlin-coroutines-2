@@ -2,6 +2,7 @@ package com.twcrone.kt.coroutines
 
 import kotlinx.coroutines.*
 import java.lang.Thread.sleep
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
 
@@ -12,15 +13,27 @@ class Resource {
     fun close() { acquired-- }
 }
 
-fun main() {
+const val numTasks = 100_000
+const val loops = 500
+const val waitMs = 10L
 
-    GlobalScope.launch {
-        delay(1000)
-        print("World")
+fun main() = runBlocking {
+    println("Starting")
+
+    val result = AtomicInteger()
+    val jobs = mutableListOf<Job>()
+
+    for (i in 1..numTasks) {
+        jobs.add(launch(Dispatchers.IO) {
+          for (x in 1..loops) {
+              delay(waitMs)
+          }
+            result.getAndIncrement()
+        })
     }
 
-    print("Hello, ")
-    sleep(1500)
+    jobs.forEach { it.join() }
+    println(result.get())
 }
 
 fun old_main() {
