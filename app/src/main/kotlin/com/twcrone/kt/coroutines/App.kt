@@ -18,14 +18,16 @@ const val loops = 500
 const val waitMs = 10L
 
 fun main() = runBlocking {
-    val job = launch {
+    val job = withTimeoutOrNull(100) {
         repeat(1000) {
             delay(10)
             print(".")
         }
     }
-    delay(250)
-    job.cancelAndJoin()
+    if(job == null) {
+        println("Builder timed-out")
+    }
+    //delay(250)
     println("Done")
 }
 
