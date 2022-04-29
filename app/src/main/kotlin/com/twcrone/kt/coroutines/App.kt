@@ -18,22 +18,16 @@ const val loops = 500
 const val waitMs = 10L
 
 fun main() = runBlocking {
-    println("Starting")
-
-    val result = AtomicInteger()
-    val jobs = mutableListOf<Job>()
-
-    for (i in 1..numTasks) {
-        jobs.add(launch(Dispatchers.IO) {
-          for (x in 1..loops) {
-              delay(waitMs)
-          }
-            result.getAndIncrement()
-        })
+    launch {
+        delay(1000)
+        println("World")
     }
+    print("Hello, ")
+    doWork()
+}
 
-    jobs.forEach { it.join() }
-    println(result.get())
+suspend fun doWork() {
+    delay(1500)
 }
 
 fun old_main() {
