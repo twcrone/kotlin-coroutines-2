@@ -18,12 +18,15 @@ const val loops = 500
 const val waitMs = 10L
 
 fun main() = runBlocking {
-    launch {
-        delay(1000)
-        println("World")
+    val job = launch {
+        repeat(1000) {
+            delay(10)
+            print(".")
+        }
     }
-    print("Hello, ")
-    doWork()
+    delay(250)
+    job.cancelAndJoin()
+    println("Done")
 }
 
 suspend fun doWork() {
